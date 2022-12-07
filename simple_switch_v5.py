@@ -28,6 +28,8 @@ class SimpleSwitch(app_manager.RyuApp):
 
         # learn mac addresses on each port of each switch
         self.mac_to_port = {}
+        self.segmentos = []
+        self.regras = []
 
     def add_flow(self, datapath, match, actions, priority=1000, buffer_id=None):
         ofproto = datapath.ofproto
@@ -126,7 +128,18 @@ class SimpleSwitch(app_manager.RyuApp):
             actions=actions, data = data)
         dp.send_msg(out)
     
-    def criarSegmento(self, data)
+    def criarSegmento(self, data):
+        ##for key in data:
+        ##   print(key, data[key])
+        return self.segmentos.append(data)
+    
+    def criarRegra(self, data):
+        for regra in self.regras:
+            if data["host_a"] == regra["host_a"] and data["host_b"] == regra["host_b"]:
+                regra["acao"] = data["acao"]
+                return
+        self.regras.append(data)
+
 
 class SimpleSwitchController(ControllerBase):
 
@@ -148,12 +161,35 @@ class SimpleSwitchController(ControllerBase):
         return Response(content_type='application/json', body=body)
         
     @route(myapp_name, '/nac/segmentos/', methods=['POST'])
-    def criaSegmentos(self, req, **kwargs):
+    def criarSegmento(self, req, **kwargs):
         try:
-           data = req.json
-           
+           data = req.json           
         except ValueError as e:     
             return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
 
         self.simple_switch_app.criarSegmento(data)
+        body = json.dumps({"Segmento criado com sucesso"})
+        return Response(content_type='application/json', body=body)
+    
+    @route(myapp_name, '/nac/segmentos/', methods=['GET'])
+    def listarSegmentos(self, req, **kwargs):
+        
+        body = json.dumps(self.simple_switch_app.segmentos)
+        return Response(content_type='application/json', body=body)
+
+    @route(myapp_name, '/nac/regras/', methods=['POST'])
+    def criarRegra(self, req, **kwargs):
+        try:
+           data = req.json           
+        except ValueError as e:     
+            return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
+
+        self.simple_switch_app.criarRegra(data)
+        body = json.dumps({"Regra criada com sucesso"})
+        return Response(content_type='application/json', body=body)
+    
+    @route(myapp_name, '/nac/regras/', methods=['GET'])
+    def listarRegras(self, req, **kwargs):
+        
+        body = json.dumps(self.simple_switch_app.regras)
         return Response(content_type='application/json', body=body)
