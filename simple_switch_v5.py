@@ -28,7 +28,7 @@ class SimpleSwitch(app_manager.RyuApp):
 
         # learn mac addresses on each port of each switch
         self.mac_to_port = {}
-        self.segmentos = []
+        self.segmentos = {}
         self.regras = []
         self.listaRegraAcessoPorHosteSegmento = []
 
@@ -130,15 +130,20 @@ class SimpleSwitch(app_manager.RyuApp):
         dp.send_msg(out)
     
     def criarSegmento(self, data):
-        ##for key in data:
-        ##   print(key, data[key])
-        return self.segmentos.append(data)
+        for k in data:
+            if k in self.segmentos.keys():                
+                for y in self.segmentos[k]:
+                    if y not in data[k]:
+                       self.segmentos[k].extend(data[k])
+
+            else:
+                self.segmentos[k] = data[k]
     
     def deletarSegmento(self, segmentoDel):
-        self.segmentos[0].pop(segmentoDel,None)
+        self.segmentos.pop(segmentoDel,None)
          
     def deletarHostSegmento(self, segmentoDel, hostDel):
-        self.segmentos[0][segmentoDel].remove(hostDel)
+        self.segmentos[segmentoDel].remove(hostDel)
     
     def criarRegra(self, data):
         host1 = list(data)[0]
@@ -185,7 +190,7 @@ class SimpleSwitchController(ControllerBase):
            data = req.json           
         except ValueError as e:     
             return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
-
+        
         self.simple_switch_app.criarSegmento(data)
         body = json.dumps({"Resultado":"Segmento criado com sucesso"})
         return Response(content_type='application/json', body=body)
@@ -198,11 +203,13 @@ class SimpleSwitchController(ControllerBase):
 
     @route(myapp_name, '/nac/segmentos/{segmento}', methods=['DELETE'])
     def deletarSegmento(self, req, **kwargs):
-        segmentoDel = kwargs.get('id')
+        segmentoDel = kwargs.get('segmento')
         print('id que ta entrando: ',segmentoDel)
 
+        mensagem = {"Resultado":"Segmento "+segmentoDel+" deletado com sucesso"}
+
         self.simple_switch_app.deletarSegmento(segmentoDel)
-        body = json.dumps({"Resultado":"deletado com sucesso"})
+        body = json.dumps(mensagem)
         return Response(content_type='application/json', body=body)
 
     @route(myapp_name, '/nac/segmentos/{segmento}/{host}', methods=['DELETE'])

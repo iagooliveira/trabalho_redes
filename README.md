@@ -8,4 +8,3 @@ Grupo:
 - Thiago
 - Iago
 
-https://www.digitalocean.com/community/tutorials/how-to-install-git-on-ubuntu-20-04#installing-git-from-source
