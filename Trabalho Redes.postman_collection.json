@@ -7,146 +7,238 @@
 	},
 	"item": [
 		{
-			"name": "Cadastro Segmento",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"funcionarios\":[\"aa:bb:cc:dd:ee:ff\", \"11:22:33:44:55:66\"], \n    \"presidencia\":[\"00:a1:b2:c3:d4:e5\"]\n}"
+			"name": "Segmento",
+			"item": [
+				{
+					"name": "Cadastro Segmento",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"funcionarios\":[\"aa:bb:cc:dd:ee:ff\", \"11:22:33:44:55:66\"], \n    \"presidencia\":[\"00:a1:b2:c3:d4:e5\"]\n}"
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8080/nac/segmentos/",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"nac",
+								"segmentos",
+								""
+							]
+						}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://0.0.0.0:8080/nac/segmentos/",
-					"protocol": "http",
-					"host": [
-						"0",
-						"0",
-						"0",
-						"0"
-					],
-					"port": "8080",
-					"path": [
-						"nac",
-						"segmentos",
-						""
-					]
+				{
+					"name": "Consulta  Cadastro Segmentos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8080/nac/segmentos/",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"nac",
+								"segmentos",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Segmento",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8080/nac/segmentos/funcionarios",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"nac",
+								"segmentos",
+								"funcionarios"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "funcionarios",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Host do Segmento",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8080/nac/segmentos/funcionarios",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"nac",
+								"segmentos",
+								"funcionarios"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "funcionarios",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Cadastro Regras",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"host_a\": \"visitantes\",\n    \"host_b\": \"internet\", \n    \"acao\": \"permitir\"\n}"
+			"name": "Regra",
+			"item": [
+				{
+					"name": "Cadastro Regras",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"host_a\": \"visitantes\",\n    \"host_b\": \"internet\", \n    \"acao\": \"permitir\"\n}"
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8080/nac/regras/",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"nac",
+								"regras",
+								""
+							]
+						}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://0.0.0.0:8080/nac/regras/",
-					"protocol": "http",
-					"host": [
-						"0",
-						"0",
-						"0",
-						"0"
-					],
-					"port": "8080",
-					"path": [
-						"nac",
-						"regras",
-						""
-					]
+				{
+					"name": "Consulta Cadastro Regras",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"host_a\": \"visitantes\",\n    \"host_b\": \"internet\", \n    \"acao\": \"permitir\"\n}"
+						},
+						"url": {
+							"raw": "http://0.0.0.0:8080/nac/regras/",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "8080",
+							"path": [
+								"nac",
+								"regras",
+								""
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "Consulta  Cadastro Segmentos",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://0.0.0.0:8080/nac/segmentos/",
-					"protocol": "http",
-					"host": [
-						"0",
-						"0",
-						"0",
-						"0"
-					],
-					"port": "8080",
-					"path": [
-						"nac",
-						"segmentos",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Consulta Cadastro Regras",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"host_a\": \"visitantes\",\n    \"host_b\": \"internet\", \n    \"acao\": \"permitir\"\n}"
-				},
-				"url": {
-					"raw": "http://0.0.0.0:8080/nac/regras/",
-					"protocol": "http",
-					"host": [
-						"0",
-						"0",
-						"0",
-						"0"
-					],
-					"port": "8080",
-					"path": [
-						"nac",
-						"regras",
-						""
-					]
-				}
-			},
-			"response": []
+			]
 		}
 	]
 }

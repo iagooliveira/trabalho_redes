@@ -19,7 +19,6 @@ myapp_name = 'simpleswitch'
 class SimpleSwitch(app_manager.RyuApp):
     _CONTEXTS = {'wsgi': WSGIApplication}
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
-    #regras = []
 
     def __init__(self, *args, **kwargs):
         super(SimpleSwitch, self).__init__(*args, **kwargs)
@@ -134,20 +133,20 @@ class SimpleSwitch(app_manager.RyuApp):
         ##   print(key, data[key])
         return self.segmentos.append(data)
     
+    def deletarSegmento(self, segmentoDel):
+        self.segmentos[0].pop(segmentoDel,None)
+         
+    def deletarHostSegmento(self, segmentoDel, hostDel):
+        self.segmentos[0][segmentoDel].remove(hostDel)
+    
     def criarRegra(self, data):
-        host1 = list(data)[0]
-        host2 = list(data)[1]
-        print("data: ", data)
-        print("host1: ",host1)
-        print("host2: ",host2)
         for regra in self.regras:
-            if data[host1] == regra[host1] and data[host2] == regra[host2]:
+            if data["host_a"] == regra["host_a"] and data["host_b"] == regra["host_b"]:
                 regra["acao"] = data["acao"]
                 return
         self.regras.append(data)
-        print("Self regras:", self.regras)
-
-
+    
+    
 class SimpleSwitchController(ControllerBase):
 
     def __init__(self, req, link, data, **config):
@@ -175,7 +174,7 @@ class SimpleSwitchController(ControllerBase):
             return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
 
         self.simple_switch_app.criarSegmento(data)
-        body = json.dumps({"Segmento criado com sucesso"})
+        body = json.dumps({"Resultado":"Segmento criado com sucesso"})
         return Response(content_type='application/json', body=body)
     
     @route(myapp_name, '/nac/segmentos/', methods=['GET'])
@@ -184,7 +183,27 @@ class SimpleSwitchController(ControllerBase):
         body = json.dumps(self.simple_switch_app.segmentos)
         return Response(content_type='application/json', body=body)
 
-    @route(myapp_name, '/nac/controle/', methods=['POST'])
+    @route(myapp_name, '/nac/segmentos/{segmento}', methods=['DELETE'])
+    def deletarSegmento(self, req, **kwargs):
+        segmentoDel = kwargs.get('id')
+        print('id que ta entrando: ',segmentoDel)
+
+        self.simple_switch_app.deletarSegmento(segmentoDel)
+        body = json.dumps({"Resultado":"deletado com sucesso"})
+        return Response(content_type='application/json', body=body)
+
+    @route(myapp_name, '/nac/segmentos/{segmento}/{host}', methods=['DELETE'])
+    def deletarHostSegmento(self, req, **kwargs):
+        segmentoDel = kwargs.get('segmento')
+        hostDel = kwargs.get('host')
+        print('segmentoDel: ',segmentoDel)
+        print('hostDel: ',hostDel)
+
+        self.simple_switch_app.deletarHostSegmento(segmentoDel, hostDel)
+        body = json.dumps({"Resultado":"deletado com sucesso"})
+        return Response(content_type='application/json', body=body)
+
+    @route(myapp_name, '/nac/regras/', methods=['POST'])
     def criarRegra(self, req, **kwargs):
         try:
            data = req.json           
@@ -194,30 +213,6 @@ class SimpleSwitchController(ControllerBase):
         self.simple_switch_app.criarRegra(data)
         body = json.dumps({"Resultado":"Regra criada com sucesso"})
         return Response(content_type='application/json', body=body)
-
-
-
-    @route(myapp_name, '/nac/controle/', methods=['GET'])
-    def consultaRegras(self, req, **kwargs):
-
-
-        body = json.dumps(self.simple_switch_app.regras)
-        
-        return Response(content_type='application/json', body=body)
-
-    
-    @route(myapp_name, '/nac/controle/', methods=['POST'])
-    def criarRegraAcessoPorHosteSegmento(self, req, **kwargs):##fazer passo 6!!
-        try:
-           data = req.json           
-        except ValueError as e:     
-            return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
-
-        self.simple_switch_app.criarRegraAcessoPorHosteSegmento(data)
-        body = json.dumps({"Resultado":"Regra criada com sucesso"})
-        return Response(content_type='application/json', body=body)
-
-
     
     @route(myapp_name, '/nac/regras/', methods=['GET'])
     def listarRegras(self, req, **kwargs):
