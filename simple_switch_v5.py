@@ -30,6 +30,7 @@ class SimpleSwitch(app_manager.RyuApp):
         self.mac_to_port = {}
         self.segmentos = []
         self.regras = []
+        self.listaRegraAcessoPorHosteSegmento = []
 
     def add_flow(self, datapath, match, actions, priority=1000, buffer_id=None):
         ofproto = datapath.ofproto
@@ -151,6 +152,12 @@ class SimpleSwitch(app_manager.RyuApp):
                 return
         self.regras.append(data)
         print("Self regras:", self.regras)
+
+    def criaRegraAcessoPorHosteSegmento(self, data):
+        for k in self.listaRegraAcessoPorHosteSegmento:
+            if data["host"] == self.listaRegraAcessoPorHosteSegmento[k]["host"]:
+                print("CERTO")
+        #self.listaRegraAcessoPorHosteSegmento.append(data)
     
     
 class SimpleSwitchController(ControllerBase):
@@ -232,8 +239,10 @@ class SimpleSwitchController(ControllerBase):
            data = req.json           
         except ValueError as e:     
             return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
-
-        self.simple_switch_app.criarRegra(data)
+        if("host" in data.keys()):
+            self.simple_switch_app.criaRegraAcessoPorHosteSegmento(data)#FALTA CRIAR ENDPOINT NO POSTMAN
+        else:
+            self.simple_switch_app.criarRegra(data)
         body = json.dumps({"Resultado":"Regra criada com sucesso"})
         return Response(content_type='application/json', body=body)
 
@@ -246,13 +255,13 @@ class SimpleSwitchController(ControllerBase):
         return Response(content_type='application/json', body=body)
 
     
-    @route(myapp_name, '/nac/controle/', methods=['POST'])
-    def criarRegraAcessoPorHosteSegmento(self, req, **kwargs):##fazer passo 6!!
-        try:
-           data = req.json           
-        except ValueError as e:     
-            return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
+    # @route(myapp_name, '/nac/controle/', methods=['POST'])
+    # def criarRegraAcessoPorHosteSegmento(self, req, **kwargs):##fazer passo 6!!
+    #     try:
+    #        data = req.json           
+    #     except ValueError as e:     
+    #         return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
 
-        self.simple_switch_app.criarRegraAcessoPorHosteSegmento(data)
-        body = json.dumps({"Resultado":"Regra criada com sucesso"})
-        return Response(content_type='application/json', body=body)
+    #     self.simple_switch_app.criaRegraAcessoPorHosteSegmento(data)
+    #     body = json.dumps({"Resultado":"Regra criada com sucesso"})
+    #     return Response(content_type='application/json', body=body)
