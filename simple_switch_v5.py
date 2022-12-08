@@ -32,7 +32,7 @@ class SimpleSwitch(app_manager.RyuApp):
         self.regras = []
         self.listaRegraAcessoPorHosteSegmento = []
 
-    def add_flow(self, datapath, match, actions, priority=1000, buffer_id=None):
+    def add_flow(self, datapath, match, actions, priority=1000, buffer_id=None, myhard_timeout=0):
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
 
@@ -41,9 +41,11 @@ class SimpleSwitch(app_manager.RyuApp):
         if buffer_id:
             mod = parser.OFPFlowMod(datapath=datapath, buffer_id=buffer_id,
                                     priority=priority, match=match,
+                                    hard_timeout=myhard_timeout,
                                     instructions=inst)
         else:
             mod = parser.OFPFlowMod(datapath=datapath, priority=priority,
+                                    hard_timeout=myhard_timeout,
                                     match=match, instructions=inst)
         datapath.send_msg(mod)
 
@@ -108,6 +110,11 @@ class SimpleSwitch(app_manager.RyuApp):
 
         # install a flow to avoid packet_in next time
         if out_port != ofp.OFPP_FLOOD:
+            for regra in self.regras:
+                if (str(src) == regra["host_a"] and str(dst) == regra["host_b"]) or (str(src) == regra["host_b"] and str(dst) == regra["host_a"]):
+                    if regra["acao"] == "bloquear":
+                        actions = []
+
             if dpid == 1 and out_port == 1:
                 actions.insert(0, ofp_parser.OFPActionSetQueue(queue_id=1))
             elif dpid == 1 and out_port == 2:
@@ -121,10 +128,10 @@ class SimpleSwitch(app_manager.RyuApp):
             # verify if we have a valid buffer_id, if yes avoid to send both
             # flow_mod & packet_out
             if msg.buffer_id != ofp.OFP_NO_BUFFER:
-                self.add_flow(dp, match, actions, buffer_id=msg.buffer_id)
+                self.add_flow(dp, match, actions, buffer_id=msg.buffer_id, myhard_timeout=10)
                 return
             else:
-                self.add_flow(dp, match, actions)
+                self.add_flow(dp, match, actions,  myhard_timeout=10)
 
         data = None
         if msg.buffer_id == ofp.OFP_NO_BUFFER:
@@ -229,22 +236,6 @@ class SimpleSwitchController(ControllerBase):
         body = json.dumps({"Resultado":"deletado com sucesso"})
         return Response(content_type='application/json', body=body)
 
-    @route(myapp_name, '/nac/regras/', methods=['POST'])
-    def criarRegra(self, req, **kwargs):
-        try:
-           data = req.json           
-        except ValueError as e:     
-            return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
-
-        self.simple_switch_app.criarRegra(data)
-        body = json.dumps({"Resultado":"Regra criada com sucesso"})
-        return Response(content_type='application/json', body=body)
-    
-    @route(myapp_name, '/nac/regras/', methods=['GET'])
-    def listarRegras(self, req, **kwargs):
-        
-        body = json.dumps(self.simple_switch_app.regras)
-        return Response(content_type='application/json', body=body)
 
     @route(myapp_name, '/nac/controle/', methods=['POST'])
     def criarRegra(self, req, **kwargs):

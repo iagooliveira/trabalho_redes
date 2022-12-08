@@ -22,7 +22,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"funcionarios\":[\"aa:bb:cc:dd:ee:ff\", \"11:22:33:44:55:66\"], \n    \"presidencia\":[\"00:a1:b2:c3:d4:e5\"]\n}"
+							"raw": "{\n    \"funcionarios\":[\"aa:bb:cc:dd:ee:ff\", \"11:22:33:44:55:66\"], \n    \"presidencia\":[\"00:a1:b2:c3:d4:es\"]\n}"
 						},
 						"url": {
 							"raw": "http://0.0.0.0:8080/nac/segmentos/",
@@ -96,7 +96,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://0.0.0.0:8080/nac/segmentos/funcionarios",
+							"raw": "http://0.0.0.0:8080/nac/segmentos/presidencia",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -108,7 +108,7 @@
 							"path": [
 								"nac",
 								"segmentos",
-								"funcionarios"
+								"presidencia"
 							],
 							"query": [
 								{
@@ -137,7 +137,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://0.0.0.0:8080/nac/segmentos/funcionarios",
+							"raw": "http://0.0.0.0:8080/nac/segmentos/funcionarios/aa:bb:cc:dd:ee:ff",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -149,7 +149,8 @@
 							"path": [
 								"nac",
 								"segmentos",
-								"funcionarios"
+								"funcionarios",
+								"aa:bb:cc:dd:ee:ff"
 							],
 							"query": [
 								{
@@ -180,10 +181,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"host_a\": \"visitantes\",\n    \"host_b\": \"internet\", \n    \"acao\": \"permitir\"\n}"
+							"raw": "{\n    \"host_a\": \"be:c0:84:aa:85:4b\",\n    \"host_b\": \"e6:4e:bc:83:7c:76\", \n    \"acao\": \"permitir\"\n}"
 						},
 						"url": {
-							"raw": "http://0.0.0.0:8080/nac/regras/",
+							"raw": "http://0.0.0.0:8080/nac/controle/",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -194,7 +195,7 @@
 							"port": "8080",
 							"path": [
 								"nac",
-								"regras",
+								"controle",
 								""
 							]
 						}
