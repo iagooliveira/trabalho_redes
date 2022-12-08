@@ -191,11 +191,13 @@ class SimpleSwitchController(ControllerBase):
 
     @route(myapp_name, '/nac/segmentos/{segmento}', methods=['DELETE'])
     def deletarSegmento(self, req, **kwargs):
-        segmentoDel = kwargs.get('id')
+        segmentoDel = kwargs.get('segmento')
         print('id que ta entrando: ',segmentoDel)
 
+        mensagem = {"Resultado":"Segmento "+segmentoDel+" deletado com sucesso"}
+
         self.simple_switch_app.deletarSegmento(segmentoDel)
-        body = json.dumps({"Resultado":"deletado com sucesso"})
+        body = json.dumps(mensagem)
         return Response(content_type='application/json', body=body)
 
     @route(myapp_name, '/nac/segmentos/{segmento}/{host}', methods=['DELETE'])
