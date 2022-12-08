@@ -86,9 +86,12 @@ class SimpleSwitch(app_manager.RyuApp):
 
         dst = eth.dst
         src = eth.src
+        print("Origem: ", src)
+        print("destino: ", dst)
 
         dpid = dp.id
         self.mac_to_port.setdefault(dpid, {})
+        print("dpid: ", dpid)
 
         # learn a mac address to avoid FLOOD next time.
         self.mac_to_port[dpid][src] = in_port
@@ -99,6 +102,9 @@ class SimpleSwitch(app_manager.RyuApp):
             out_port = ofp.OFPP_FLOOD
 
         actions = [ofp_parser.OFPActionOutput(out_port)]
+
+        print("Porta de saída: ", out_port)
+        print("Porta entrada: ", in_port)
 
         # install a flow to avoid packet_in next time
         if out_port != ofp.OFPP_FLOOD:
@@ -159,10 +165,10 @@ class SimpleSwitch(app_manager.RyuApp):
         print("Self regras:", self.regras)
 
     def criaRegraAcessoPorHosteSegmento(self, data):
-        for k in self.listaRegraAcessoPorHosteSegmento:
-            if data["host"] == self.listaRegraAcessoPorHosteSegmento[k]["host"]:
-                print("CERTO")
-        #self.listaRegraAcessoPorHosteSegmento.append(data)
+        print("CERTO1")
+        print(self.listaRegraAcessoPorHosteSegmento)
+
+        self.listaRegraAcessoPorHosteSegmento.append(data)
     
     
 class SimpleSwitchController(ControllerBase):
@@ -246,6 +252,7 @@ class SimpleSwitchController(ControllerBase):
            data = req.json           
         except ValueError as e:     
             return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
+        print("data:",data.keys())
         if("host" in data.keys()):
             self.simple_switch_app.criaRegraAcessoPorHosteSegmento(data)#FALTA CRIAR ENDPOINT NO POSTMAN
         else:
