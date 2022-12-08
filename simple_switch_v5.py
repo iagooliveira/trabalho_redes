@@ -158,6 +158,9 @@ class SimpleSwitch(app_manager.RyuApp):
         self.regras.append(data)
         print("Self regras:", self.regras)
 
+    def criaRegraAcessoPorHorario(self, data):
+        return
+
     def criaRegraAcessoPorHosteSegmento(self, data):
         for k in self.listaRegraAcessoPorHosteSegmento:
             if data["host"] == self.listaRegraAcessoPorHosteSegmento[k]["host"]:
@@ -204,7 +207,6 @@ class SimpleSwitchController(ControllerBase):
     @route(myapp_name, '/nac/segmentos/{segmento}', methods=['DELETE'])
     def deletarSegmento(self, req, **kwargs):
         segmentoDel = kwargs.get('segmento')
-        print('id que ta entrando: ',segmentoDel)
 
         mensagem = {"Resultado":"Segmento "+segmentoDel+" deletado com sucesso"}
 
@@ -216,8 +218,6 @@ class SimpleSwitchController(ControllerBase):
     def deletarHostSegmento(self, req, **kwargs):
         segmentoDel = kwargs.get('segmento')
         hostDel = kwargs.get('host')
-        print('segmentoDel: ',segmentoDel)
-        print('hostDel: ',hostDel)
 
         self.simple_switch_app.deletarHostSegmento(segmentoDel, hostDel)
         body = json.dumps({"Resultado":"deletado com sucesso"})
@@ -248,6 +248,8 @@ class SimpleSwitchController(ControllerBase):
             return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
         if("host" in data.keys()):
             self.simple_switch_app.criaRegraAcessoPorHosteSegmento(data)#FALTA CRIAR ENDPOINT NO POSTMAN
+        if("horario" in data.keys()):
+            self.simple_switch_app.criaRegraAcessoPorHorario(data)
         else:
             self.simple_switch_app.criarRegra(data)
         body = json.dumps({"Resultado":"Regra criada com sucesso"})
@@ -259,7 +261,7 @@ class SimpleSwitchController(ControllerBase):
 
         body = json.dumps(self.simple_switch_app.regras)
         
-        return Response(content_type='application/json', body=body)
+        return Response(content_type='application/json', body=body, status=200)
 
     
     # @route(myapp_name, '/nac/controle/', methods=['POST'])
