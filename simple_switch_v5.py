@@ -183,7 +183,7 @@ class SimpleSwitchController(ControllerBase):
            data = req.json           
         except ValueError as e:     
             return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
-
+        
         self.simple_switch_app.criarSegmento(data)
         body = json.dumps({"Resultado":"Segmento criado com sucesso"})
         return Response(content_type='application/json', body=body)
