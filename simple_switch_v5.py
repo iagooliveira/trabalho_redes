@@ -28,7 +28,7 @@ class SimpleSwitch(app_manager.RyuApp):
 
         # learn mac addresses on each port of each switch
         self.mac_to_port = {}
-        self.segmentos = []
+        self.segmentos = {}
         self.regras = []
 
     def add_flow(self, datapath, match, actions, priority=1000, buffer_id=None):
@@ -129,15 +129,20 @@ class SimpleSwitch(app_manager.RyuApp):
         dp.send_msg(out)
     
     def criarSegmento(self, data):
-        ##for key in data:
-        ##   print(key, data[key])
-        return self.segmentos.append(data)
+        for k in data:
+            if k in self.segmentos.keys():                
+                for y in self.segmentos[k]:
+                    if y not in data[k]:
+                       self.segmentos[k].extend(data[k])
+
+            else:
+                self.segmentos[k] = data[k]
     
     def deletarSegmento(self, segmentoDel):
-        self.segmentos[0].pop(segmentoDel,None)
+        self.segmentos.pop(segmentoDel,None)
          
     def deletarHostSegmento(self, segmentoDel, hostDel):
-        self.segmentos[0][segmentoDel].remove(hostDel)
+        self.segmentos[segmentoDel].remove(hostDel)
     
     def criarRegra(self, data):
         host1 = list(data)[0]
