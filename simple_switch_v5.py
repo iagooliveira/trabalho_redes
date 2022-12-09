@@ -31,6 +31,7 @@ class SimpleSwitch(app_manager.RyuApp):
         self.segmentos = {}
         self.regras = []
         self.listaRegraAcessoPorHosteSegmento = []
+        self.listaRegraAcessoPorSegmentos = []
 
     def add_flow(self, datapath, match, actions, priority=1000, buffer_id=None, myhard_timeout=0):
         ofproto = datapath.ofproto
@@ -114,6 +115,17 @@ class SimpleSwitch(app_manager.RyuApp):
                 if (str(src) == regra["host_a"] and str(dst) == regra["host_b"]) or (str(src) == regra["host_b"] and str(dst) == regra["host_a"]):
                     if regra["acao"] == "bloquear":
                         actions = []
+            print("listaRegraAcessoPorSegmentos na func", self.listaRegraAcessoPorSegmentos)
+            for regraPorAcessoSeg in self.listaRegraAcessoPorSegmentos:
+                if (str(src) in self.segmentos[regraPorAcessoSeg["segmento_a"]] and str(dst) in self.segmentos[regraPorAcessoSeg["segmento_b"]]) or (str(src) in self.segmentos[regraPorAcessoSeg["segmento_b"]] and str(dst) in self.segmentos[regraPorAcessoSeg["segmento_a"]]):
+                    if regraPorAcessoSeg["acao"] == "bloquear":
+                        actions = []
+            
+            
+            for regraPorAcessoHostSeg in self.listaRegraAcessoPorHosteSegmento:
+                if (regraPorAcessoHostSeg["host"] in self.segmentos[regraPorAcessoHostSeg["segmento"]]):
+                    if regraPorAcessoHostSeg["acao"] == "bloquear":
+                        actions = []
 
             if dpid == 1 and out_port == 1:
                 actions.insert(0, ofp_parser.OFPActionSetQueue(queue_id=1))
@@ -175,11 +187,24 @@ class SimpleSwitch(app_manager.RyuApp):
         return
 
     def criaRegraAcessoPorHosteSegmento(self, data):
-        print("CERTO1")
         print(self.listaRegraAcessoPorHosteSegmento)
 
+        for regraAcessoPorHosteSeg in self.listaRegraAcessoPorHosteSegmento:
+            if data["host"] == regraAcessoPorHosteSeg["host"] and data["segmento"] == regraAcessoPorHosteSeg["segmento"]:
+                regraAcessoPorHosteSeg["acao"] = data["acao"]
+                return
         self.listaRegraAcessoPorHosteSegmento.append(data)
+        print("listaRegraAcessoPorSegmentos na func", self.listaRegraAcessoPorHosteSegmento)
     
+    def criaRegraAcessoPorSeguimentos(self, data):
+        # if data["segmento_a"] == and data["segmento_b"]
+
+        for regraAcessoPorSeg in self.listaRegraAcessoPorSegmentos:
+            if data["segmento_a"] == regraAcessoPorSeg["segmento_a"] and data["segmento_b"] == regraAcessoPorSeg["segmento_b"]:
+                regraAcessoPorSeg["acao"] = data["acao"]
+                return
+        self.listaRegraAcessoPorSegmentos.append(data)
+        print("listaRegraAcessoPorSegmentos na func", self.listaRegraAcessoPorSegmentos)
     
 class SimpleSwitchController(ControllerBase):
 
@@ -244,10 +269,12 @@ class SimpleSwitchController(ControllerBase):
         except ValueError as e:     
             return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
         print("data:",data.keys())
-        if("host" in data.keys()):
+        if("host" in data.keys() and "segmento" in data.keys()):
             self.simple_switch_app.criaRegraAcessoPorHosteSegmento(data)#FALTA CRIAR ENDPOINT NO POSTMAN
         if("horario" in data.keys()):
             self.simple_switch_app.criaRegraAcessoPorHorario(data)
+        if ("segmento_a" and "segmento_b" in data.keys()):
+            self.simple_switch_app.criaRegraAcessoPorSeguimentos(data)
         else:
             self.simple_switch_app.criarRegra(data)
         body = json.dumps({"Resultado":"Regra criada com sucesso"})

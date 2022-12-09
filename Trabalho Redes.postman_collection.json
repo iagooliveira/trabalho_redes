@@ -1,9 +1,8 @@
 {
 	"info": {
-		"_postman_id": "2f45074a-c2c5-4c87-9624-87dae3cdd64c",
+		"_postman_id": "bf40ad21-9468-4182-8e11-77887517334a",
 		"name": "Trabalho Redes",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "17431415"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -22,7 +21,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"funcionarios\":[\"aa:bb:cc:dd:ee:ff\", \"11:22:33:44:55:66\"], \n    \"presidencia\":[\"00:a1:b2:c3:d4:es\"]\n}"
+							"raw": "{\n    \"funcionarios\":[\"00:00:00:00:00:01\"], \n    \"presidencia\":[\"00:00:00:00:00:02\"]\n}"
 						},
 						"url": {
 							"raw": "http://0.0.0.0:8080/nac/segmentos/",
@@ -96,7 +95,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://0.0.0.0:8080/nac/segmentos/presidencia",
+							"raw": "http://0.0.0.0:8080/nac/segmentos/funcionarios",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -108,7 +107,7 @@
 							"path": [
 								"nac",
 								"segmentos",
-								"presidencia"
+								"funcionarios"
 							],
 							"query": [
 								{
@@ -181,7 +180,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"host_a\": \"be:c0:84:aa:85:4b\",\n    \"host_b\": \"e6:4e:bc:83:7c:76\", \n    \"acao\": \"permitir\"\n}"
+							"raw": "{\n    \"host_a\": \"00:00:00:00:00:01\",\n    \"host_b\": \"00:00:00:00:00:02\", \n    \"acao\": \"permitir\"\n}"
 						},
 						"url": {
 							"raw": "http://0.0.0.0:8080/nac/controle/",
@@ -221,7 +220,7 @@
 							"raw": "{\n    \"host_a\": \"visitantes\",\n    \"host_b\": \"internet\", \n    \"acao\": \"permitir\"\n}"
 						},
 						"url": {
-							"raw": "http://0.0.0.0:8080/nac/regras/",
+							"raw": "http://0.0.0.0:8080/nac/controle/",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -232,7 +231,73 @@
 							"port": "8080",
 							"path": [
 								"nac",
-								"regras",
+								"controle",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Regras de Controle de acesso por segmentos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"segmento_a\": \"presidencia\", \"segmento_b\": \"funcionarios\", \"acao\": \"permitir\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/nac/controle/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"nac",
+								"controle",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar regra de controle de acesso básica por host e segmento",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"host\": \"00:00:00:00:0:01\",\"segmento\": \"presidencia\", \"acao\": \"permitir\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/nac/controle/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"nac",
+								"controle",
 								""
 							]
 						}
