@@ -1,4 +1,5 @@
 import json
+import datetime
 
 from ryu.base import app_manager
 from ryu.controller import ofp_event
@@ -111,6 +112,7 @@ class SimpleSwitch(app_manager.RyuApp):
 
         # install a flow to avoid packet_in next time
         if out_port != ofp.OFPP_FLOOD:
+
             for regra in self.regras:
                 if (str(src) == regra["host_a"] and str(dst) == regra["host_b"]) or (str(src) == regra["host_b"] and str(dst) == regra["host_a"]):
                     if regra["acao"] == "bloquear":
@@ -153,6 +155,75 @@ class SimpleSwitch(app_manager.RyuApp):
             datapath=dp, buffer_id=msg.buffer_id, in_port=in_port,
             actions=actions, data = data)
         dp.send_msg(out)
+
+    def verificarData(regraDiaHora):
+        data_limite_dias_e_horas = regraDiaHora.split()
+
+        array_de_dias = data_limite_dias_e_horas[0].split('-')
+
+        array_de_horarios = data_limite_dias_e_horas[1].split('-')
+
+        data_atual = datetime.datetime.now()
+
+        data_atual_formatada = data_atual.strftime("%A %H:%M")
+        data_atual_formatada_horas = data_atual.strftime("%H:%M")
+        data_atual_formatada_dia_da_semana = data_atual.strftime("%A")
+
+        if (array_de_dias[0] == 'seg'):
+            array_de_dias[0] = 1
+        if (array_de_dias[0] == 'ter'):
+            array_de_dias[0] = 2
+        if (array_de_dias[0] == 'qua'):
+            array_de_dias[0] = 3
+        if (array_de_dias[0] == 'qui'):
+            array_de_dias[0] = 4
+        if (array_de_dias[0] == 'sex'):
+            array_de_dias[0] = 5
+        if (array_de_dias[0] == 'sab'):
+            array_de_dias[0] = 6
+        if (array_de_dias[0] == 'dom'):
+            array_de_dias[0] = 7
+
+        if (array_de_dias[1] == 'seg'):
+            array_de_dias[1] = 1
+        if (array_de_dias[1] == 'ter'):
+            array_de_dias[1] = 2
+        if (array_de_dias[1] == 'qua'):
+            array_de_dias[1] = 3
+        if (array_de_dias[1] == 'qui'):
+            array_de_dias[1] = 4
+        if (array_de_dias[1] == 'sex'):
+            array_de_dias[1] = 5
+        if (array_de_dias[1] == 'sab'):
+            array_de_dias[1] = 6
+        if (array_de_dias[1] == 'dom'):
+            array_de_dias[1] = 7
+
+        check_date = 0
+
+        if (data_atual_formatada_dia_da_semana == 'Monday'):
+            check_date = 1
+        if (data_atual_formatada_dia_da_semana == 'Tuesday'):
+            check_date = 2
+        if (data_atual_formatada_dia_da_semana == 'Wednesday'):
+            check_date = 3
+        if (data_atual_formatada_dia_da_semana == 'Thursday'):
+            check_date = 4
+        if (data_atual_formatada_dia_da_semana == 'Friday'):
+            check_date = 5
+        if (data_atual_formatada_dia_da_semana == 'Saturday'):
+            check_date = 6
+        if (data_atual_formatada_dia_da_semana == 'Sunday'):
+            check_date = 7
+
+        if (array_de_dias[0] <= check_date <= array_de_dias[1]):
+            print('DIAS DENTRO')
+            if (data_atual_formatada_horas >= array_de_horarios[0] and data_atual_formatada_horas <= array_de_horarios[1]):
+                print("HORAS DENTRO")
+            else:
+                print("HORAS FORA")
+        else:
+            print("DIAS FORA")
     
     def criarSegmento(self, data):
         for k in data:
@@ -273,8 +344,10 @@ class SimpleSwitchController(ControllerBase):
             self.simple_switch_app.criaRegraAcessoPorHosteSegmento(data)#FALTA CRIAR ENDPOINT NO POSTMAN
         if("horario" in data.keys()):
             self.simple_switch_app.criaRegraAcessoPorHorario(data)
-        if ("segmento_a" and "segmento_b" in data.keys()):
+        if ("segmento_a" and "segmento_b" in data.keys()): 
             self.simple_switch_app.criaRegraAcessoPorSeguimentos(data)
+        if("host" in data.keys() and "segmento" in data.keys() and "horario" in data.keys()):
+            self.simple_switch_app.verificarData()
         else:
             self.simple_switch_app.criarRegra(data)
         body = json.dumps({"Resultado":"Regra criada com sucesso"})
@@ -283,19 +356,6 @@ class SimpleSwitchController(ControllerBase):
     @route(myapp_name, '/nac/controle/', methods=['GET'])
     def consultaRegras(self, req, **kwargs):
 
-
         body = json.dumps(self.simple_switch_app.regras)
         
         return Response(content_type='application/json', body=body, status=200)
-
-    
-    # @route(myapp_name, '/nac/controle/', methods=['POST'])
-    # def criarRegraAcessoPorHosteSegmento(self, req, **kwargs):##fazer passo 6!!
-    #     try:
-    #        data = req.json           
-    #     except ValueError as e:     
-    #         return Response(content_type='application/json', body=json.dumps({"error": str(e)}), status=400)
-
-    #     self.simple_switch_app.criaRegraAcessoPorHosteSegmento(data)
-    #     body = json.dumps({"Resultado":"Regra criada com sucesso"})
-    #     return Response(content_type='application/json', body=body)
