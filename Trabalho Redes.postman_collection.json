@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "bf40ad21-9468-4182-8e11-77887517334a",
+		"_postman_id": "bf3abb0a-e40c-4c47-a4c7-3cfb38947427",
 		"name": "Trabalho Redes",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17431415"
 	},
 	"item": [
 		{
@@ -273,6 +274,39 @@
 				},
 				{
 					"name": "Criar regra de controle de acesso básica por host e segmento",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"host\": \"00:00:00:00:0:01\",\"segmento\": \"presidencia\", \"acao\": \"permitir\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/nac/controle/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"nac",
+								"controle",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar regra acesso por horario",
 					"request": {
 						"method": "POST",
 						"header": [],
